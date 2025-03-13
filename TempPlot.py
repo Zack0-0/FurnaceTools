@@ -1,3 +1,6 @@
+# 作者：Zack
+# 日期：2025/3/13
+
 import tkinter as tk
 from tkinter import ttk
 import matplotlib.pyplot as plt
