@@ -9,7 +9,7 @@ class TemperatureCurveApp:
         self.root.title("工艺配方升温曲线生成器")
 
         # 设置字体
-        self.default_font = ("Arial", 10)
+        self.default_font = ("Microsoft YaHei", 10)
 
         # 创建表格输入区域
         self.create_input_table()
@@ -170,6 +170,27 @@ class TemperatureCurveApp:
         self.ax.set_title("工艺配方升温曲线")
         self.ax.set_xlabel("时间 (分钟)")
         self.ax.set_ylabel("温度 (°C)")
+
+        # 在对应的位置添加文字标注
+        previous_temp = None
+        for i, (temp, time) in enumerate(zip(temps, times)):
+            if temp != 0 and time != 0:
+                if temp != previous_temp:  # 只有当当前温度与前一个温度不同时才标注
+                    self.ax.text(x[i+1], y[i+1] + 20, f"{temp}°C", fontsize=10, ha='center', va='bottom')
+                previous_temp = temp
+
+        # 添加升温速率的标注
+        for i, rate_label in enumerate(self.rate_labels):
+            rate_text = rate_label.cget("text")
+            if rate_text:
+                rate = float(rate_text)
+                if rate > 0:
+                    # 调整va参数为'top'，并增加y轴偏移量
+                    self.ax.text(x[i+1], y[i+1] - 40, f"{rate:.1f}°C/min", fontsize=10, ha='center', va='top')
+
+        # 添加网格线
+        self.ax.grid(True, linestyle='--', alpha=0.7)
+
         self.ax.grid(True)
 
         # 更新图表
@@ -180,13 +201,13 @@ class TemperatureCurveApp:
         # 这里可以添加从文件加载的逻辑
         # 示例数据
         sample_recipe = {
-            "段1": {"温度": 300, "时间": 25},
-            "段2": {"温度": 600, "时间": 25},
-            "段3": {"温度": 1000, "时间": 70},
-            "段4": {"温度": 1300, "时间": 35},
-            "段5": {"温度": 1600, "时间": 35},
-            "段6": {"温度": 1950, "时间": 42},
-            "段7": {"温度": 1950, "时间": 30},
+            "段1": {"温度": 300, "时间": 30},
+            "段2": {"温度": 600, "时间": 30},
+            "段3": {"温度": 1000, "时间": 100},
+            "段4": {"温度": 1600, "时间": 130},
+            "段5": {"温度": 1950, "时间": 175},
+            "段6": {"温度": 1950, "时间": 30},
+            "段7": {"温度": 0, "时间": 0},
             "段8": {"温度": 0, "时间": 0},
         }
 
@@ -197,6 +218,9 @@ class TemperatureCurveApp:
                 temp_entry.insert(0, str(sample_recipe[segment]["温度"]))
                 time_entry.delete(0, tk.END)
                 time_entry.insert(0, str(sample_recipe[segment]["时间"]))
+        
+        # 加载配方后自动生成曲线
+        self.plot_curve()
 
     def reset_entries(self):
         # 清空所有输入框
