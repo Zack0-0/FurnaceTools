@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 class CoolingPredictorApp:
     def __init__(self, master):
         self.master = master
-        master.title("温度冷却预测器")
+        master.title("冷却时间预测")
 
         style = ttk.Style()
         style.configure('.', font=('微软雅黑', 10))
@@ -20,20 +20,20 @@ class CoolingPredictorApp:
         # 环境温度
         ttk.Label(self.frame_input, text="环境温度 (℃):").grid(row=0, column=0, sticky=tk.W)
         self.entry_env_temp = ttk.Entry(self.frame_input)
-        self.entry_env_temp.insert(0, "20")
+        self.entry_env_temp.insert(0, "8")
         self.entry_env_temp.grid(row=0, column=1, sticky=tk.W)
 
         # 目标温度
         ttk.Label(self.frame_input, text="目标温度 (℃):").grid(row=1, column=0, sticky=tk.W)
         self.entry_target_temp = ttk.Entry(self.frame_input)
-        self.entry_target_temp.insert(0, "70")
+        self.entry_target_temp.insert(0, "80")
         self.entry_target_temp.grid(row=1, column=1, sticky=tk.W)
 
         # 数据输入区域
         ttk.Label(self.frame_input, text="时间-温度数据（每行格式：时间(小时:分钟) 温度）:").grid(row=2, column=0, columnspan=2, sticky=tk.W)
         self.text_data = tk.Text(self.frame_input, height=5, width=30)
         self.text_data.grid(row=3, column=0, columnspan=2)
-        self.text_data.insert(tk.END, "17:52 1921\n18:01 1906\n18:15 1881\n19:43 1743")  # 示例数据
+        self.text_data.insert(tk.END, "17:52 1921\n18:01 1906\n18:15 1881\n19:43 1743\n21:16 1622")  # 示例数据
 
         # 计算按钮
         self.btn_calculate = ttk.Button(self.frame_input, text="计算冷却时间", command=self.calculate)
@@ -50,7 +50,7 @@ class CoolingPredictorApp:
         self.entry_start_date.grid(row=0, column=3, sticky=tk.W)
 
         # 绘图区域
-        self.figure = plt.figure(figsize=(6, 3))
+        self.figure = plt.figure(figsize=(6, 4))
         self.canvas = FigureCanvasTkAgg(self.figure, master=master)
         self.canvas.get_tk_widget().pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
 
@@ -76,7 +76,7 @@ class CoolingPredictorApp:
                 hours, minutes = map(int, time_str.split(':'))
                 total_minutes = hours * 60 + minutes
                 if start_time is None:
-                    start_time = datetime.now().replace(day=start_day,hour=hours, minute=minutes, second=0, microsecond=0)
+                    start_time = datetime.now().replace(month=start_month,day=start_day,hour=hours, minute=minutes, second=0, microsecond=0)
                 t_list.append(total_minutes-start_time.hour*60-start_time.minute)
                 T_list.append(float(parts[1]))
             except ValueError:
@@ -172,7 +172,7 @@ class CoolingPredictorApp:
 
         ax.set_xlabel('时间')
         ax.set_ylabel('温度 (℃)')
-        ax.set_title('温度冷却曲线')
+        ax.set_title('温度曲线')
         ax.grid(True)
         ax.legend()
 
