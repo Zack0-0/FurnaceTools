@@ -41,7 +41,7 @@ class TemperatureCurveApp:
         self.temp_entries = []
         self.time_entries = []
         self.rate_labels = []
-        for _ in range(8):  # 默认8个阶段
+        for _ in range(6):  # 默认6个阶段
             self.add_stage()
 
         # 绑定事件以更新升温速率
@@ -206,9 +206,7 @@ class TemperatureCurveApp:
             "段3": {"温度": 1000, "时间": 100},
             "段4": {"温度": 1600, "时间": 130},
             "段5": {"温度": 1950, "时间": 175},
-            "段6": {"温度": 1950, "时间": 30},
-            "段7": {"温度": 0, "时间": 0},
-            "段8": {"温度": 0, "时间": 0},
+            "段6": {"温度": 1950, "时间": 30}
         }
 
         for i, (temp_entry, time_entry) in enumerate(zip(self.temp_entries, self.time_entries)):
